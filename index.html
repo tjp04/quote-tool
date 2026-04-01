@@ -1,9 +1,9 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Quote Tool</title><style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#1a1a1a;padding:1.5rem;font-size:14px;max-width:960px;margin:0 auto}.section{background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:12px;padding:1.25rem;margin-bottom:1rem}.sec-title{font-size:11px;font-weight:600;color:#888;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:1rem}.fx-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;align-items:start}.fx-cell{display:flex;flex-direction:column;border-bottom:0.5px solid rgba(0,0,0,0.06)}.fx-cell:nth-last-child(-n+2){border-bottom:none}.fx-row{display:grid;grid-template-columns:1fr 56px 28px;gap:6px;align-items:center;padding:5px 0}.fx-name{font-size:13px}.fx-expand{background:none;border:none;cursor:pointer;font-size:13px;color:#bbb;padding:2px 4px;border-radius:4px;line-height:1;display:flex;align-items:center;justify-content:center}.fx-expand:hover{background:#f0f0f0}.fx-expand.has-custom{color:#e67e22}.fx-expand.is-open{color:#555}.fx-detail-panel{display:none;flex-direction:column;gap:4px;padding:2px 0 8px 8px}.fx-detail-panel.open{display:flex}.det-unit{display:flex;flex-direction:column;gap:2px;padding:2px 0}.det-inline{display:flex;align-items:center;gap:6px}.det-num{font-size:12px;color:#888;min-width:14px;text-align:right;flex-shrink:0}.loc-row{display:flex;align-items:center;gap:6px;margin-top:2px;margin-left:20px}.loc-row label{font-size:11px;color:#888;white-space:nowrap}.loc-row input{font-size:12px;padding:3px 7px;border-radius:6px;border:0.5px solid rgba(0,0,0,0.2);background:#fff;color:#1a1a1a;flex:1;min-width:0}.sub-wrap{margin-left:20px;margin-top:2px}.sub-wrap label,.note-wrap label{font-size:11px;color:#888;display:block;margin-bottom:2px}.sub-wrap textarea,.note-wrap textarea{width:100%;font-size:12px;padding:4px 8px;border-radius:6px;border:0.5px solid rgba(0,0,0,0.2);resize:vertical;min-height:36px;background:#fff;color:#1a1a1a}.note-wrap{margin-top:6px}.two-col{display:grid;grid-template-columns:1fr 1fr;gap:0 32px}.col-title{font-size:11px;font-weight:600;color:#888;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px}.char-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:0.5px solid rgba(0,0,0,0.06)}.char-row:last-child{border-bottom:none}.char-lbl{font-size:13px;flex:1}.patch-row{display:flex;gap:4px}.gen-note-wrap{margin-top:1rem;padding-top:1rem;border-top:0.5px solid rgba(0,0,0,0.06)}.gen-note-wrap label{font-size:11px;color:#888;display:block;margin-bottom:4px}.gen-note-wrap textarea{width:100%;font-size:13px;padding:6px 8px;border-radius:6px;border:0.5px solid rgba(0,0,0,0.2);resize:vertical;min-height:52px;background:#fff;color:#1a1a1a}.price-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem}.pcard{background:#f5f5f3;border-radius:8px;padding:1rem}.pcard-lbl{font-size:12px;color:#888;margin-bottom:4px}.pcard-val{font-size:26px;font-weight:500}.out-box{background:#f5f5f3;border-radius:8px;padding:1rem;font-size:13px;line-height:1.8;white-space:pre-wrap;font-family:monospace;min-height:80px;margin-bottom:8px}.copy-btn{width:100%;margin-top:6px;font-size:13px;padding:9px;cursor:pointer;border:0.5px solid rgba(0,0,0,0.2);border-radius:8px;background:#fff}.copy-btn:hover{background:#f5f5f3}.qnum-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.qnum-row label{font-size:14px}select{font-size:13px;padding:3px 6px;border-radius:6px;border:0.5px solid rgba(0,0,0,0.2);background:#fff;color:#1a1a1a}input[type=number]{font-size:13px;padding:4px 6px;border-radius:6px;border:0.5px solid rgba(0,0,0,0.2);width:56px;text-align:center}input[type=checkbox]{width:16px;height:16px;cursor:pointer}input[type=text],input[type=password]{font-size:13px;padding:4px 8px;border-radius:6px;border:0.5px solid rgba(0,0,0,0.2);background:#fff;color:#1a1a1a}.gen-btn{width:100%;padding:12px;font-size:15px;font-weight:500;cursor:pointer;margin-bottom:1rem;background:#1a1a1a;color:#fff;border:none;border-radius:12px}.gen-btn:hover{background:#333}.loading{color:#888;font-size:14px;padding:2rem;text-align:center}.error{color:#c0392b;font-size:13px;padding:1rem;background:#fdf2f2;border-radius:8px;margin-bottom:1rem}#login-screen{display:flex;align-items:center;justify-content:center;min-height:90vh}.login-box{background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:16px;padding:2rem;width:100%;max-width:320px;text-align:center}.login-box input{width:100%;padding:10px 12px;font-size:14px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.2);margin-bottom:1rem;text-align:center}.login-box button{width:100%;padding:11px;font-size:14px;font-weight:500;background:#1a1a1a;color:#fff;border:none;border-radius:8px;cursor:pointer}.login-box button:hover{background:#333}.login-err{color:#c0392b;font-size:12px;margin-top:8px;min-height:18px}</style></head><body><div id="login-screen"><div class="login-box"><input type="password" id="pw-input" placeholder="Password" onkeydown="if(event.key==='Enter')tryLogin()"><button onclick="tryLogin()">Continue</button><div class="login-err" id="login-err"></div></div></div><div id="main-app" style="display:none"><div id="loading" class="loading">Loading...</div><div id="error" class="error" style="display:none"></div><div id="app" style="display:none"><div class="section"><div class="sec-title">Quote info</div><div class="qnum-row"><label>Quote number</label><input type="text" id="quoteNum" placeholder="e.g. Q-2024-001" style="width:180px;padding:6px 10px;border-radius:8px"><label>Version</label><select id="versionSel" onchange="onVersionChange()"></select></div></div><div class="section"><div class="sec-title">Fixtures</div><div class="fx-grid" id="fx-container"></div></div><div class="section"><div class="two-col"><div><div class="col-title">Office notes</div><div id="char-container"></div></div><div><div class="col-title">Site conditions</div><div id="site-container"></div><div class="gen-note-wrap"><label>Additional notes</label><textarea id="site-general-note" placeholder="Any additional site notes..."></textarea></div></div></div></div><button class="gen-btn" onclick="generate()">Generate quote</button><div class="section" id="output-section" style="display:none"><div class="sec-title">Pricing</div><div class="price-grid"><div class="pcard"><div class="pcard-lbl">Repipe price</div><div class="pcard-val" id="repipe-price">-</div></div><div class="pcard"><div class="pcard-lbl">Patching price</div><div class="pcard-val" id="patch-price">-</div></div></div><div class="sec-title" style="margin-top:1rem">Repipe notes</div><div class="out-box" id="notes-out"></div><button class="copy-btn" onclick="copyNotes()">Copy notes</button><div class="sec-title" style="margin-top:1rem">Log data</div><div class="out-box" id="log-out" style="font-size:11px"></div><button class="copy-btn" onclick="copyLog()">Copy log row</button></div></div></div><script>
 const BASE='https://docs.google.com/spreadsheets/d/e/2PACX-1vTqzn81-JwojJFPcBt76ztHAdefHyqF7wpPzawwKwrJqasgw88FkTgEZHtYdW--J0gBj1aispOXxvg9/pub?single=true&output=csv&gid=';
-const GIDS={Auth:'42606263',What:'1494554881',Gather1:'62254917',Detail:'528508865',Adjust:'51515145',M:'1387434188',Char:'4998717',Site:'1859968359',Notes1:'2080488995',Notes2:'77075483'};
+const GIDS={Auth:'42606263',What:'1494554881',Gather1:'62254917',Detail:'528508865',Adjust:'51515145',M:'1387434188',M2:'1520995098',Char:'4998717',Site:'1859968359',Notes1:'2080488995',Notes2:'77075483'};
 const LETTERS=['--','A','B','C','D','E','F','G','H','I','J'];
 const NUMS=['--','1','2','3','4','5','6','7','8','9'];
-let RAW={},VERSIONS=[],FIXTURES=[],DETAIL_LISTS={},ADJUST_MAP={},REPRICE={},PATCHING_RATE=0,SITE_FIELDS=[],CHAR_FIELDS=[],NOTES1=[],NOTES2=[],SUB_NOTES={};
+let RAW={},VERSIONS=[],FIXTURES=[],DETAIL_LISTS={},ADJUST_MAP={},FX_PRICE={},PATCHING_RATE=0,M2_ADDONS=[],SITE_FIELDS=[],CHAR_FIELDS=[],NOTES1=[],NOTES2=[],SUB_NOTES={};
 let CORRECT_PW='';
 
 function parseCSV(text){
@@ -49,12 +49,12 @@ async function tryLogin(){
 
 async function loadData(){
   try{
-    const [whatR,g1R,detR,adjR,mR,charR,siteR,n1R,n2R]=await Promise.all([
+    const [whatR,g1R,detR,adjR,mR,m2R,charR,siteR,n1R,n2R]=await Promise.all([
       ft(GIDS.What),ft(GIDS.Gather1),ft(GIDS.Detail),
-      ft(GIDS.Adjust),ft(GIDS.M),ft(GIDS.Char),
+      ft(GIDS.Adjust),ft(GIDS.M),ft(GIDS.M2),ft(GIDS.Char),
       ft(GIDS.Site),ft(GIDS.Notes1),ft(GIDS.Notes2)
     ]);
-    RAW={whatR,g1R,detR,adjR,mR,charR,siteR,n1R,n2R};
+    RAW={whatR,g1R,detR,adjR,mR,m2R,charR,siteR,n1R,n2R};
     const vset=new Set();
     [whatR,g1R,detR,adjR,mR,charR,siteR,n1R,n2R].forEach(rows=>{
       rows.slice(1).forEach(r=>{if(r[0]&&r[0].match(/^V\d+$/i))vset.add(r[0].trim());});
@@ -80,7 +80,7 @@ function onVersionChange(){
 }
 
 function applyVersion(ver){
-  const {whatR,g1R,detR,adjR,mR,charR,siteR,n1R,n2R}=RAW;
+  const {whatR,g1R,detR,adjR,mR,m2R,charR,siteR,n1R,n2R}=RAW;
   const detailAssign={};
   g1R.slice(1).filter(r=>r[0]===ver).forEach(r=>{if(r[1])detailAssign[r[1]]=(r[2]||'').trim()||null;});
   FIXTURES=[];
@@ -103,15 +103,31 @@ function applyVersion(ver){
   SUB_NOTES={'A2':'Faucet description (finish, make, model)','E3':'Customer provided valve details','E4':'Requested valve details (make, model)'};
   ADJUST_MAP={};
   adjR.slice(1).filter(r=>r[0]===ver).forEach(r=>{if(r[1]&&r[2]!=='')ADJUST_MAP[r[1].trim()]=parseFloat(r[2]);});
-  REPRICE={};PATCHING_RATE=0;
+
+  FX_PRICE={};PATCHING_RATE=0;
   mR.slice(1).filter(r=>r[0]===ver).forEach(r=>{
     if(!r[1]||!r[2])return;
     const code=r[1].trim();
     const price=parseInt((r[2]||'').replace(/[^0-9]/g,''));
     if(isNaN(price))return;
-    if(code.startsWith('R')){const tier=parseInt(code.slice(1));if(!isNaN(tier))REPRICE[tier]=price;}
-    else if(code.startsWith('P')){PATCHING_RATE=price;}
+    if(code.startsWith('R')){FX_PRICE[code]=price;}
+    else if(code.startsWith('P')&&code==='P1'){PATCHING_RATE=price;}
   });
+
+  M2_ADDONS=[];
+  m2R.slice(1).filter(r=>r[0]===ver).forEach(r=>{
+    if(!r[1]||!r[2])return;
+    const code=r[1].trim();
+    const price=parseInt((r[3]||r[2]||'').replace(/[^0-9]/g,''));
+    if(isNaN(price))return;
+    const match=code.match(/^(R[^A-Z]*|R*)(([A-Z])(\d+))$/i);
+    if(match){
+      const fxCode=match[1].toUpperCase();
+      const detVal=match[2].toUpperCase();
+      M2_ADDONS.push({fxCode,detVal,price});
+    }
+  });
+
   CHAR_FIELDS=[];
   charR.slice(1).filter(r=>r[0]===ver).forEach(r=>{
     if(!r[1])return;
@@ -234,8 +250,7 @@ function rebuildUnits(code){
       refreshSubFields(code,i);
     }
   }
-  const nw=makeNoteWrap(code);
-  panel.appendChild(nw);
+  panel.appendChild(makeNoteWrap(code));
   if(prevNote)document.getElementById('fxnote_'+code).value=prevNote;
 }
 
@@ -314,27 +329,31 @@ function getPatchPrice(mult){
   return Math.round((lNum(l.value)*10+parseInt(n.value))*PATCHING_RATE*mult/50)*50;
 }
 
-function getAdjCount(){
-  let t=0;
+function getRepipeBase(){
+  let total=0;
   FIXTURES.forEach(fx=>{
     const cnt=getCnt(fx.code);
-    if(!fx.detail||cnt===0){t+=cnt;return;}
+    if(cnt===0)return;
+    const unitPrice=FX_PRICE[fx.code]||0;
     const list=getDetailList(fx);
-    if(!list){t+=cnt;return;}
+    if(!list){
+      total+=cnt*unitPrice;
+      return;
+    }
     for(let i=0;i<cnt;i++){
       const el=document.getElementById('sel_'+fx.code+'_'+i);
       const val=el?el.value:list[0].val;
-      t+=ADJUST_MAP[val]!==undefined?ADJUST_MAP[val]:1;
+      const adj=ADJUST_MAP[val]!==undefined?ADJUST_MAP[val]:1;
+      total+=adj*unitPrice;
+      M2_ADDONS.forEach(addon=>{
+        const fxMatch=addon.fxCode==='R*'||addon.fxCode===fx.code;
+        if(fxMatch&&val.toUpperCase()===addon.detVal){
+          total+=addon.price;
+        }
+      });
     }
   });
-  return Math.round(t*10)/10;
-}
-
-function lookupReprice(count){
-  const keys=Object.keys(REPRICE).map(Number).sort((a,b)=>a-b);
-  if(count<=0)return 0;
-  for(const k of keys){if(count<=k)return REPRICE[k];}
-  return REPRICE[keys[keys.length-1]]||0;
+  return Math.round(total);
 }
 
 function getCnt(code){return parseInt(document.getElementById('cnt_'+code)?.value)||0;}
@@ -378,6 +397,7 @@ function buildNotes(){
       lines.push('  \u2022 ('+cnt+') '+fx.name);
     }else{
       const def=list[0].val;
+      const defLabel=list[0].label||'';
       const vals=[];
       for(let i=0;i<cnt;i++){const el=document.getElementById('sel_'+fx.code+'_'+i);vals.push(el?el.value:def);}
       if(vals.every(v=>v===def)){
@@ -388,7 +408,7 @@ function buildNotes(){
       }else{
         const defCnt=vals.filter(v=>v===def).length;
         let line='  \u2022 ('+cnt+') '+fx.name;
-        if(defCnt>0)line+='\n      - ('+defCnt+') standard';
+        if(defCnt>0&&defLabel)line+='\n      - ('+defCnt+') '+defLabel;
         vals.forEach((v,i)=>{
           if(v===def)return;
           const lbl=list.find(o=>o.val===v)?.label||v;
@@ -413,18 +433,17 @@ function generate(){
   const qNum=document.getElementById('quoteNum').value.trim()||'--';
   const ver=document.getElementById('versionSel').value;
   const mult=getMult();
-  const adj=getAdjCount();
-  const base=lookupReprice(adj);
+  const base=getRepipeBase();
   const repipe=Math.round(base*mult/50)*50;
   const patch=getPatchPrice(mult);
   document.getElementById('repipe-price').textContent='$'+repipe.toLocaleString();
   document.getElementById('patch-price').textContent=patch>0?'$'+patch.toLocaleString():'--';
   document.getElementById('notes-out').textContent=buildNotes();
-  document.getElementById('log-out').textContent=buildLog(qNum,ver,adj,base,mult,repipe,patch);
+  document.getElementById('log-out').textContent=buildLog(qNum,ver,base,mult,repipe,patch);
   document.getElementById('output-section').style.display='block';
 }
 
-function buildLog(qNum,ver,adj,base,mult,repipe,patch){
+function buildLog(qNum,ver,base,mult,repipe,patch){
   const parts=[qNum,ver,new Date().toLocaleDateString()];
   FIXTURES.forEach(fx=>parts.push(getCnt(fx.code)));
   FIXTURES.forEach(fx=>{
@@ -448,7 +467,7 @@ function buildLog(qNum,ver,adj,base,mult,repipe,patch){
     const el=document.getElementById('char_'+f.id);if(!el){parts.push('');return;}
     parts.push(f.type==='bool'?(el.checked?'TRUE':'FALSE'):(el.value==='--'?'':el.value));
   });
-  parts.push(adj,base,mult.toFixed(3),repipe,patch);
+  parts.push(base,mult.toFixed(3),repipe,patch);
   return parts.join('\t');
 }
 
