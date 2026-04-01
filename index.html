@@ -101,8 +101,16 @@ function applyVersion(ver){
   });
   DETAIL_LISTS=dlists;
   SUB_NOTES={'A2':'Faucet description (finish, make, model)','E3':'Customer provided valve details','E4':'Requested valve details (make, model)'};
+
   ADJUST_MAP={};
-  adjR.slice(1).filter(r=>r[0]===ver).forEach(r=>{if(r[1]&&r[2]!=='')ADJUST_MAP[r[1].trim()]=parseFloat(r[2]);});
+  adjR.slice(1).filter(r=>r[0]===ver).forEach(r=>{
+    if(!r[1]||!r[2]||r[3]==='')return;
+    const fxCode=r[1].trim().toUpperCase();
+    const subCode=r[2].trim().toUpperCase();
+    const adj=parseFloat(r[3]);
+    if(isNaN(adj))return;
+    ADJUST_MAP[subCode]=adj;
+  });
 
   FX_PRICE={};PATCHING_RATE=0;
   mR.slice(1).filter(r=>r[0]===ver).forEach(r=>{
@@ -111,21 +119,17 @@ function applyVersion(ver){
     const price=parseInt((r[2]||'').replace(/[^0-9]/g,''));
     if(isNaN(price))return;
     if(code.startsWith('R')){FX_PRICE[code]=price;}
-    else if(code.startsWith('P')&&code==='P1'){PATCHING_RATE=price;}
+    else if(code==='P1'){PATCHING_RATE=price;}
   });
 
   M2_ADDONS=[];
   m2R.slice(1).filter(r=>r[0]===ver).forEach(r=>{
-    if(!r[1]||!r[2])return;
-    const code=r[1].trim();
-    const price=parseInt((r[3]||r[2]||'').replace(/[^0-9]/g,''));
+    if(!r[1]||!r[2]||!r[3])return;
+    const fxCode=r[1].trim().toUpperCase();
+    const subCode=r[2].trim().toUpperCase();
+    const price=parseInt((r[3]||'').replace(/[^0-9]/g,''));
     if(isNaN(price))return;
-    const match=code.match(/^(R[^A-Z]*|R*)(([A-Z])(\d+))$/i);
-    if(match){
-      const fxCode=match[1].toUpperCase();
-      const detVal=match[2].toUpperCase();
-      M2_ADDONS.push({fxCode,detVal,price});
-    }
+    M2_ADDONS.push({fxCode,detVal:subCode,price});
   });
 
   CHAR_FIELDS=[];
@@ -162,6 +166,11 @@ function getDetailList(fx){
   const combined=[];
   keys.forEach(k=>{const list=DETAIL_LISTS[k];if(list)list.forEach(o=>combined.push(o));});
   return combined.length>1?combined:null;
+}
+
+function getAdjForVal(val){
+  const key=val.toUpperCase();
+  return ADJUST_MAP[key]!==undefined?ADJUST_MAP[key]:1;
 }
 
 function hasCustomSelection(code){
@@ -261,8 +270,9 @@ function refreshSubFields(code,i){
   const sub=document.getElementById('sub_'+code+'_'+i);if(!sub)return;
   const el=document.getElementById('sel_'+code+'_'+i);
   const val=el?el.value:defaultVal;
+  const cnt=getCnt(code);
   sub.innerHTML='';
-  if(val!==defaultVal){
+  if(val!==defaultVal&&cnt>1){
     const lr=document.createElement('div');lr.className='loc-row';
     lr.innerHTML='<label>Location</label><input type="text" id="loc_'+code+'_'+i+'" placeholder="e.g. master bath">';
     sub.appendChild(lr);
@@ -343,11 +353,11 @@ function getRepipeBase(){
     for(let i=0;i<cnt;i++){
       const el=document.getElementById('sel_'+fx.code+'_'+i);
       const val=el?el.value:list[0].val;
-      const adj=ADJUST_MAP[val]!==undefined?ADJUST_MAP[val]:1;
+      const adj=getAdjForVal(val);
       total+=adj*unitPrice;
       M2_ADDONS.forEach(addon=>{
         const fxMatch=addon.fxCode==='R*'||addon.fxCode===fx.code;
-        if(fxMatch&&val.toUpperCase()===addon.detVal){
+        if(fxMatch&&val.toUpperCase()===addon.detVal&&adj>0){
           total+=addon.price;
         }
       });
@@ -397,24 +407,23 @@ function buildNotes(){
       lines.push('  \u2022 ('+cnt+') '+fx.name);
     }else{
       const def=list[0].val;
-      const defLabel=list[0].label||'';
       const vals=[];
       for(let i=0;i<cnt;i++){const el=document.getElementById('sel_'+fx.code+'_'+i);vals.push(el?el.value:def);}
-      if(vals.every(v=>v===def)){
-        lines.push('  \u2022 ('+cnt+') '+fx.name);
-      }else if(vals.every(v=>v===vals[0])){
+      const allSame=vals.every(v=>v===vals[0]);
+      if(allSame){
         const lbl=list.find(o=>o.val===vals[0])?.label||'';
-        lines.push('  \u2022 ('+cnt+') '+fx.name+(lbl?'\n      - '+lbl:''));
-      }else{
-        const defCnt=vals.filter(v=>v===def).length;
         let line='  \u2022 ('+cnt+') '+fx.name;
-        if(defCnt>0&&defLabel)line+='\n      - ('+defCnt+') '+defLabel;
+        if(lbl)line+='\n      - '+lbl;
+        lines.push(line);
+      }else{
+        let line='  \u2022 ('+cnt+') '+fx.name;
         vals.forEach((v,i)=>{
-          if(v===def)return;
-          const lbl=list.find(o=>o.val===v)?.label||v;
+          const lbl=list.find(o=>o.val===v)?.label||'';
           const locEl=document.getElementById('loc_'+fx.code+'_'+i);
           const loc=locEl?locEl.value.trim():'';
-          line+='\n      - '+(loc?loc+': ':'')+lbl;
+          if(lbl){
+            line+='\n      - '+(loc?loc+': ':'')+lbl;
+          }
         });
         lines.push(line);
       }
