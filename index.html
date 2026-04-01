@@ -48,14 +48,32 @@ h1{font-size:18px;font-weight:500;margin-bottom:1.5rem}
 select{font-size:13px;padding:3px 6px;border-radius:6px;border:0.5px solid rgba(0,0,0,0.2);background:#fff;color:#1a1a1a}
 input[type=number]{font-size:13px;padding:4px 6px;border-radius:6px;border:0.5px solid rgba(0,0,0,0.2);width:56px;text-align:center}
 input[type=checkbox]{width:16px;height:16px;cursor:pointer}
-input[type=text]{font-size:13px;padding:4px 8px;border-radius:6px;border:0.5px solid rgba(0,0,0,0.2);background:#fff;color:#1a1a1a}
+input[type=text],input[type=password]{font-size:13px;padding:4px 8px;border-radius:6px;border:0.5px solid rgba(0,0,0,0.2);background:#fff;color:#1a1a1a}
 .gen-btn{width:100%;padding:12px;font-size:15px;font-weight:500;cursor:pointer;margin-bottom:1rem;background:#1a1a1a;color:#fff;border:none;border-radius:12px}
 .gen-btn:hover{background:#333}
 .loading{color:#888;font-size:14px;padding:2rem;text-align:center}
 .error{color:#c0392b;font-size:13px;padding:1rem;background:#fdf2f2;border-radius:8px;margin-bottom:1rem}
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:80vh}
+.login-box{background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:16px;padding:2rem;width:100%;max-width:340px;text-align:center}
+.login-box h2{font-size:16px;font-weight:500;margin-bottom:1.5rem;color:#1a1a1a}
+.login-box input{width:100%;padding:10px 12px;font-size:14px;border-radius:8px;border:0.5px solid rgba(0,0,0,0.2);margin-bottom:1rem;text-align:center;letter-spacing:0.05em}
+.login-box button{width:100%;padding:11px;font-size:14px;font-weight:500;background:#1a1a1a;color:#fff;border:none;border-radius:8px;cursor:pointer}
+.login-box button:hover{background:#333}
+.login-err{color:#c0392b;font-size:12px;margin-top:8px;min-height:18px}
 </style>
 </head>
 <body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <h2>Repipe quoting tool</h2>
+    <input type="password" id="pw-input" placeholder="Enter password" onkeydown="if(event.key==='Enter')tryLogin()">
+    <button onclick="tryLogin()">Continue</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
+
+<div id="main-app" style="display:none">
 <h1>Repipe quoting tool</h1>
 <div id="loading" class="loading">Loading sheet data...</div>
 <div id="error" class="error" style="display:none"></div>
@@ -100,15 +118,18 @@ input[type=text]{font-size:13px;padding:4px 8px;border-radius:6px;border:0.5px s
     <button class="copy-btn" onclick="copyEl('log-out')">Copy log row</button>
   </div>
 </div>
+</div>
+
 <script>
 const BASE='https://docs.google.com/spreadsheets/d/e/2PACX-1vTqzn81-JwojJFPcBt76ztHAdefHyqF7wpPzawwKwrJqasgw88FkTgEZHtYdW--J0gBj1aispOXxvg9/pub?single=true&output=csv&gid=';
-const GIDS={What:'1494554881',Gather1:'62254917',Detail:'528508865',Adjust:'51515145',M:'1387434188',Char:'4998717',Site:'1859968359',Notes1:'2080488995',Notes2:'77075483'};
+const GIDS={Auth:'42606263',What:'1494554881',Gather1:'62254917',Detail:'528508865',Adjust:'51515145',M:'1387434188',Char:'4998717',Site:'1859968359',Notes1:'2080488995',Notes2:'77075483'};
 const LETTERS=['--','A','B','C','D','E','F','G','H','I','J'];
 const NUMS=['--','1','2','3','4','5','6','7','8','9'];
 
 let RAW={};
 let VERSIONS=[];
 let FIXTURES=[],DETAIL_LISTS={},ADJUST_MAP={},REPRICE={},PATCHING_RATE=0,SITE_FIELDS=[],CHAR_FIELDS=[],NOTES1=[],NOTES2=[],SUB_NOTES={};
+let CORRECT_PW='';
 
 function parseCSV(text){
   return text.trim().split('\n').map(line=>{
@@ -130,6 +151,29 @@ async function ft(gid){
 }
 
 function lNum(l){if(!l||l==='--'||!l.match(/[a-zA-Z]/))return 0;return l.toUpperCase().charCodeAt(0)-64;}
+
+async function tryLogin(){
+  const entered=document.getElementById('pw-input').value.trim();
+  const errEl=document.getElementById('login-err');
+  errEl.textContent='';
+  if(!CORRECT_PW){
+    try{
+      const rows=await ft(GIDS.Auth);
+      CORRECT_PW=(rows[0]?.[0]||'').trim();
+    }catch(e){
+      errEl.textContent='Could not load auth. Try again.';
+      return;
+    }
+  }
+  if(entered===CORRECT_PW){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('main-app').style.display='block';
+    loadData();
+  }else{
+    errEl.textContent='Incorrect password.';
+    document.getElementById('pw-input').value='';
+  }
+}
 
 async function loadData(){
   try{
@@ -165,17 +209,14 @@ function onVersionChange(){
 
 function applyVersion(ver){
   const {whatR,g1R,detR,adjR,mR,charR,siteR,n1R,n2R}=RAW;
-
   const detailAssign={};
   g1R.slice(1).filter(r=>r[0]===ver).forEach(r=>{if(r[1])detailAssign[r[1]]=(r[2]||'').trim()||null;});
-
   FIXTURES=[];
   whatR.slice(1).filter(r=>r[0]===ver).forEach(r=>{
     if(!r[1]||!r[2])return;
     if(r[1]==='V115')return;
     FIXTURES.push({code:r[1],name:r[2],detail:detailAssign[r[1]]||null});
   });
-
   const dlists={};
   detR.slice(1).filter(r=>r[0]===ver).forEach(r=>{
     if(!r[1])return;
@@ -187,27 +228,18 @@ function applyVersion(ver){
     while(dlists[lk].length&&dlists[lk][dlists[lk].length-1].label==='')dlists[lk].pop();
   });
   DETAIL_LISTS=dlists;
-
   SUB_NOTES={'A2':'Faucet description (finish, make, model)','E3':'Customer provided valve details','E4':'Requested valve details (make, model)'};
-
   ADJUST_MAP={};
   adjR.slice(1).filter(r=>r[0]===ver).forEach(r=>{if(r[1]&&r[2]!=='')ADJUST_MAP[r[1].trim()]=parseFloat(r[2]);});
-
-  REPRICE={};
-  PATCHING_RATE=0;
+  REPRICE={};PATCHING_RATE=0;
   mR.slice(1).filter(r=>r[0]===ver).forEach(r=>{
     if(!r[1]||!r[2])return;
     const code=r[1].trim();
     const price=parseInt((r[2]||'').replace(/[^0-9]/g,''));
     if(isNaN(price))return;
-    if(code.startsWith('R')){
-      const tier=parseInt(code.slice(1));
-      if(!isNaN(tier))REPRICE[tier]=price;
-    }else if(code.startsWith('P')){
-      PATCHING_RATE=price;
-    }
+    if(code.startsWith('R')){const tier=parseInt(code.slice(1));if(!isNaN(tier))REPRICE[tier]=price;}
+    else if(code.startsWith('P')){PATCHING_RATE=price;}
   });
-
   CHAR_FIELDS=[];
   charR.slice(1).filter(r=>r[0]===ver).forEach(r=>{
     if(!r[1])return;
@@ -219,7 +251,6 @@ function applyVersion(ver){
     if(r[1].toLowerCase().includes('patch'))type='patch';
     CHAR_FIELDS.push({id,label:r[1],type,pct});
   });
-
   SITE_FIELDS=[];
   siteR.slice(1).filter(r=>r[0]===ver).forEach(r=>{
     if(!r[1])return;
@@ -230,16 +261,10 @@ function applyVersion(ver){
     if(dtype.includes('#')||dtype.includes('drop')||dtype.includes('num'))type='stories';
     SITE_FIELDS.push({id,label:r[1],type,pct});
   });
-
   NOTES1=[];
-  n1R.slice(1).filter(r=>r[0]===ver).forEach(r=>{
-    if(r[1])NOTES1.push({text:r[1],logic:(r[2]||'always on').toLowerCase().trim(),sub:(r[3]||'').toUpperCase()==='TRUE',order:parseInt(r[4])||99});
-  });
+  n1R.slice(1).filter(r=>r[0]===ver).forEach(r=>{if(r[1])NOTES1.push({text:r[1],logic:(r[2]||'always on').toLowerCase().trim(),sub:(r[3]||'').toUpperCase()==='TRUE',order:parseInt(r[4])||99});});
   NOTES2=[];
-  n2R.slice(1).filter(r=>r[0]===ver).forEach(r=>{
-    if(r[1])NOTES2.push({text:r[1],logic:(r[2]||'always on').toLowerCase().trim(),sub:(r[3]||'').toUpperCase()==='TRUE',order:parseInt(r[4])||99});
-  });
-
+  n2R.slice(1).filter(r=>r[0]===ver).forEach(r=>{if(r[1])NOTES2.push({text:r[1],logic:(r[2]||'always on').toLowerCase().trim(),sub:(r[3]||'').toUpperCase()==='TRUE',order:parseInt(r[4])||99});});
   buildUI();
 }
 
@@ -424,25 +449,20 @@ function lookupReprice(count){
 
 function getCnt(code){return parseInt(document.getElementById('cnt_'+code)?.value)||0;}
 
-function getDetCount(rCode,detLetter){
-  const fxNum=parseInt(rCode.slice(1));
-  const fxCode=FIXTURES[fxNum-1]?.code;
-  if(!fxCode)return 0;
-  const cnt=getCnt(fxCode);
-  const fx=FIXTURES.find(f=>f.code===fxCode);
+function getDetCount(rNum,detLetter){
+  const fx=FIXTURES[rNum-1];if(!fx)return 0;
+  const cnt=getCnt(fx.code);
   const list=getDetailList(fx);if(!list)return 0;
   let c=0;
   for(let i=0;i<cnt;i++){
-    const el=document.getElementById('sel_'+fxCode+'_'+i);
+    const el=document.getElementById('sel_'+fx.code+'_'+i);
     if(el&&el.value.startsWith(detLetter.toUpperCase()))c++;
   }
   return c;
 }
 
-function getRCount(rCode){
-  const fxNum=parseInt(rCode.slice(1));
-  const fx=FIXTURES[fxNum-1];
-  if(!fx)return 0;
+function getRCount(rNum){
+  const fx=FIXTURES[rNum-1];if(!fx)return 0;
   return getCnt(fx.code);
 }
 
@@ -450,23 +470,17 @@ function evalLogic(logic){
   if(!logic||logic==='always on')return true;
   try{
     let expr=logic.trim();
-    expr=expr.replace(/r(\d+)([a-z])([><=!]+)(\d+)/gi,(m,num,det,op,val)=>{
-      return getDetCount('R'+num,det)+op+val;
-    });
-    expr=expr.replace(/r(\d+)([><=!]+)(\d+)/gi,(m,num,op,val)=>{
-      return getRCount('R'+num)+op+val;
-    });
+    expr=expr.replace(/r(\d+)([a-z])([><=!]+)(\d+)/gi,(m,num,det,op,val)=>getDetCount(parseInt(num),det)+op+val);
+    expr=expr.replace(/r(\d+)([><=!]+)(\d+)/gi,(m,num,op,val)=>getRCount(parseInt(num))+op+val);
     expr=expr.replace(/,,/g,',');
-    const parts=expr.split(',').map(p=>p.trim());
+    const parts=expr.split(',').map(p=>p.trim()).filter(p=>p);
     return parts.every(p=>{try{return !!eval(p);}catch(e){return true;}});
   }catch(e){return true;}
 }
 
 function buildNotes(){
   const lines=[];
-  NOTES1.sort((a,b)=>a.order-b.order).forEach(n=>{
-    if(evalLogic(n.logic))lines.push((n.sub?'  \u2022 ':'')+n.text);
-  });
+  NOTES1.sort((a,b)=>a.order-b.order).forEach(n=>{if(evalLogic(n.logic))lines.push((n.sub?'  \u2022 ':'')+n.text);});
   FIXTURES.forEach(fx=>{
     const cnt=getCnt(fx.code);if(cnt===0)return;
     const list=getDetailList(fx);
@@ -494,9 +508,7 @@ function buildNotes(){
     }
   });
   lines.push('');
-  NOTES2.sort((a,b)=>a.order-b.order).forEach(n=>{
-    if(evalLogic(n.logic))lines.push((n.sub?'  \u2022 ':'')+n.text);
-  });
+  NOTES2.sort((a,b)=>a.order-b.order).forEach(n=>{if(evalLogic(n.logic))lines.push((n.sub?'  \u2022 ':'')+n.text);});
   return lines.join('\n');
 }
 
@@ -547,8 +559,6 @@ function copyEl(id){
   navigator.clipboard.writeText(document.getElementById(id).textContent)
     .then(()=>{const b=event.target;const orig=b.textContent;b.textContent='Copied!';setTimeout(()=>b.textContent=orig,1500);});
 }
-
-loadData();
 </script>
 </body>
 </html>
