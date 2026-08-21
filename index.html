@@ -80,9 +80,9 @@ async function loadData(){
       rows.slice(1).forEach(r=>{if(r[0]&&r[0].match(/^V\d+$/i))vset.add(r[0].trim());});
     });
     VERSIONS=[...vset].sort((a,b)=>parseInt(a.slice(1),10)-parseInt(b.slice(1),10));
-    const sel=document.getElementById('versionSel');
-    sel.innerHTML=VERSIONS.map(v=>'<option value="'+v+'">'+(VERSION_LABELS[v]?v+' \u2014 '+VERSION_LABELS[v]:v)+'</option>').join('');
     const latest=VERSIONS[VERSIONS.length-1];
+    const sel=document.getElementById('versionSel');
+    sel.innerHTML=VERSIONS.map(v=>'<option value="'+v+'"'+(v===latest?' selected':'')+'>'+(VERSION_LABELS[v]?v+' \u2014 '+VERSION_LABELS[v]:v)+'</option>').join('');
     sel.value=latest;
     document.getElementById('loading').style.display='none';
     document.getElementById('app').style.display='block';
