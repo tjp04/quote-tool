@@ -79,12 +79,14 @@ async function loadData(){
     [whatR,g1R,detR,adjR,mR,charR,siteR,n1R,n2R].forEach(rows=>{
       rows.slice(1).forEach(r=>{if(r[0]&&r[0].match(/^V\d+$/i))vset.add(r[0].trim());});
     });
-    VERSIONS=[...vset].sort();
+    VERSIONS=[...vset].sort((a,b)=>parseInt(a.slice(1),10)-parseInt(b.slice(1),10));
     const sel=document.getElementById('versionSel');
     sel.innerHTML=VERSIONS.map(v=>'<option value="'+v+'">'+(VERSION_LABELS[v]?v+' \u2014 '+VERSION_LABELS[v]:v)+'</option>').join('');
+    const latest=VERSIONS[VERSIONS.length-1];
+    sel.value=latest;
     document.getElementById('loading').style.display='none';
     document.getElementById('app').style.display='block';
-    applyVersion(VERSIONS[0]);
+    applyVersion(latest);
     checkDraft();
   }catch(e){
     document.getElementById('loading').style.display='none';
