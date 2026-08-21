@@ -4,7 +4,7 @@ const GIDS={Auth:'42606263',What:'1494554881',Gather1:'62254917',Gather4:'587297
 const SB_URL='https://kwttjxikbfuxdxejstvp.supabase.co';
 const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3dHRqeGlrYmZ1eGR4ZWpzdHZwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwODQxMTksImV4cCI6MjA5MDY2MDExOX0.u3YK3F5mdm3NXZLGfB3k5l_RdNBjlNiKD-uGD6BVorg';
 const LETTERS=['--','A','B','C','D','E','F','G','H','I','J'];
-const BUILD='2026-08-20c';
+const BUILD='2026-08-20d';
 const DRAFT_KEY='quote_tool_draft';
 let RAW={},VERSIONS=[],VERSION_LABELS={},FIXTURES=[],DETAIL_LISTS={},ADJUST_MAP={},FX_PRICE={},PATCHING_RATE=0,M2_ADDONS=[],SITE_FIELDS=[],CHAR_FIELDS=[],NOTES1=[],NOTES2=[],SUB_NOTES={};
 let CORRECT_PW='';
@@ -253,6 +253,16 @@ function buildFixtures(){
     const inp=document.createElement('input');inp.type='number';inp.min=0;inp.max=20;inp.value=0;
     inp.id='cnt_'+fx.code;
     inp.onchange=()=>{rebuildUnits(fx.code);updateExpandBtn(fx.code);};
+    inp.addEventListener('focus',()=>inp.select());
+    inp.addEventListener('blur',()=>{
+      const n=parseInt(inp.value,10);
+      const v=isNaN(n)||n<0?0:Math.min(n,20);
+      if(String(v)!==inp.value){
+        inp.value=v;
+        rebuildUnits(fx.code);
+        updateExpandBtn(fx.code);
+      }
+    });
     const expBtn=document.createElement('button');
     expBtn.className='fx-expand';expBtn.id='expbtn_'+fx.code;expBtn.textContent='▼';
     expBtn.onclick=()=>togglePanel(fx.code);
